@@ -1,17 +1,15 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 import pickle
-from datetime import date
 
 
-# ---------- Classes ---------- #
 class Customer:
     def __init__(self, username="", password="", address="", balance=0.0):
         self.username = username
         self.password = password
         self.address = address
         self.balance = balance
-        self.purchase_orders = []  # Tracks purchase orders
+        self.purchase_orders = []  
 
     def __str__(self):
         return f"Username: {self.username}, Address: {self.address}, Balance: {self.balance}"
@@ -36,7 +34,6 @@ TICKET_TYPES = [
     {"type": "VIP Experience Pass", "price": 550, "validity": "1 Day", "features": "Expedited access and reserved seating"},
 ]
 
-# ---------- File Handling ---------- #
 def save_data(filename, data):
     with open(filename, "wb") as file:
         pickle.dump(data, file)
@@ -50,7 +47,6 @@ def load_data(filename):
         return {}
 
 
-# ---------- Account Management ---------- #
 class AccountManagement:
     def __init__(self):
         self.customers = load_data("accounts.pkl")
@@ -100,7 +96,6 @@ class AccountManagement:
             messagebox.showerror("Error", "Invalid username or password!")
 
 
-# ---------- Ticket Purchasing Interface ---------- #
 class TicketPurchasingApp:
     def __init__(self, customers, username):
         self.customers = customers
@@ -140,7 +135,6 @@ class TicketPurchasingApp:
         AccountManagement()
 
 
-# ---------- Admin Dashboard ---------- #
 class AdminDashboard:
     def __init__(self, customers):
         self.customers = customers
@@ -178,10 +172,5 @@ class AdminDashboard:
         AccountManagement()
 
 
-# ---------- Main Program ---------- #
 if __name__ == "__main__":
     AccountManagement()
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
