@@ -9,7 +9,7 @@ class Customer:
         self.password = password
         self.address = address
         self.balance = balance
-        self.purchase_orders = []  
+        self.purchase_orders = []
 
     def __str__(self):
         return f"Username: {self.username}, Address: {self.address}, Balance: {self.balance}"
@@ -117,6 +117,23 @@ class TicketPurchasingApp:
                 value=ticket["type"]
             ).pack(anchor="w", padx=30)
 
+        # Payment Fields
+        tk.Label(self.root, text="Name on Card:").pack(anchor="w", padx=30)
+        self.card_name = tk.Entry(self.root)
+        self.card_name.pack(anchor="w", padx=30)
+
+        tk.Label(self.root, text="Card Number:").pack(anchor="w", padx=30)
+        self.card_number = tk.Entry(self.root)
+        self.card_number.pack(anchor="w", padx=30)
+
+        tk.Label(self.root, text="Expiry Date (MM/YY):").pack(anchor="w", padx=30)
+        self.card_expiry = tk.Entry(self.root)
+        self.card_expiry.pack(anchor="w", padx=30)
+
+        tk.Label(self.root, text="CVV:").pack(anchor="w", padx=30)
+        self.card_cvv = tk.Entry(self.root, show="*")
+        self.card_cvv.pack(anchor="w", padx=30)
+
         tk.Button(self.root, text="Purchase", command=self.process_purchase, bg="green", fg="white").pack(pady=10)
         tk.Button(self.root, text="Logout", command=self.logout).pack(pady=10)
 
@@ -125,10 +142,29 @@ class TicketPurchasingApp:
     def process_purchase(self):
         ticket_type = self.ticket_var.get()
         ticket = next(ticket for ticket in TICKET_TYPES if ticket["type"] == ticket_type)
+
+        # Collect payment details
+        name = self.card_name.get()
+        card_number = self.card_number.get()
+        expiry = self.card_expiry.get()
+        cvv = self.card_cvv.get()
+
+        # Validate payment fields
+        if not all([name, card_number, expiry, cvv]):
+            messagebox.showwarning("Incomplete", "Please fill in all payment details.")
+            return
+
         order = PurchaseOrder(f"Order-{len(self.customer.purchase_orders) + 1}", ticket["type"], ticket["price"])
         self.customer.purchase_orders.append(order)
         save_data("accounts.pkl", self.customers)
         messagebox.showinfo("Success", f"Purchased: {ticket['type']}!")
+        self.reset_form()
+
+    def reset_form(self):
+        self.card_name.delete(0, tk.END)
+        self.card_number.delete(0, tk.END)
+        self.card_expiry.delete(0, tk.END)
+        self.card_cvv.delete(0, tk.END)
 
     def logout(self):
         self.root.destroy()
@@ -174,3 +210,4 @@ class AdminDashboard:
 
 if __name__ == "__main__":
     AccountManagement()
+
